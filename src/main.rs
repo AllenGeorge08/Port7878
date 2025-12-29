@@ -8,7 +8,7 @@ fn main() {
      let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
     let pool = ThreadPool::new(4); //e To limit the number of threads being created
 
-    for stream in listener.incoming() {
+    for stream in listener.incoming().take(2) {
         let stream = stream.unwrap();
         
         pool.execute(|| {
@@ -23,13 +23,6 @@ fn main() {
 fn handle_connection(mut stream: TcpStream) {
     //e takes http stream as a request..
     let buf_reader = BufReader::new(&stream);
-    // let http_request: Vec<_> = buf_reader
-    //     .lines()
-    //     .map(|result| result.unwrap())
-    //     .take_while(|line| !line.is_empty())
-    //     .collect();
-
-    // println!("Request: {http_request:#?}");
 
     // `BufReader<R>` can improve the speed of programs that make *small* and
     // / *repeated* read calls to the same file or network socket. It does not
